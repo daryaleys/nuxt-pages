@@ -2,34 +2,44 @@
 type UserData = {
     surname: string;
     name: string;
+    phone: string;
 };
 
 const inputLabels: Record<keyof UserData, string> = {
     surname: "Фамилия",
     name: "Имя",
+    phone: "Телефон"
 };
 
-const userValues: UserData = {
+const userInfo = useState('userInfo', () => ({
     surname: "",
     name: "",
-};
+    phone: "",
+}))
 
 const currentInput: Ref<keyof UserData | ""> = ref("");
+let openModal = ref(false);
 
 const changeStep = () => {
     if (!currentInput.value) currentInput.value = "surname";
-    else currentInput.value = "name";
-};
-
-const setResult = () => {
-    console.log(userValues);
-};
+    else if (currentInput.value === 'surname') currentInput.value = "name"
+    else {
+        currentInput.value = "phone";
+        openModal.value = true;
+    }
+}
 </script>
 
 <template>
     <form class="form">
-        <TextInput v-if="currentInput" v-model="userValues[currentInput]" :currentInput :label="inputLabels[currentInput]" />
-        <button v-if="currentInput === 'name'" @click.prevent="setResult" type="submit" class="btn">Отправить</button>
+        <TextInput v-if="currentInput" v-model="userInfo[currentInput]" :currentInput
+            :label="inputLabels[currentInput]" />
+
+        <Modal v-if="openModal">
+            <TextInput v-model="userInfo[currentInput]" :currentInput :label="inputLabels[currentInput]" />
+            <NuxtLink to="/info" class="btn">Закончить</NuxtLink>
+        </Modal>
+
         <button v-else @click.prevent="changeStep" class="btn">Далее</button>
     </form>
 </template>

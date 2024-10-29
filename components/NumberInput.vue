@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-// передаваемое значение
+// введенное значение
 const input = defineModel();
 
 // сообщение об ошибке
 const error = ref("");
 
 // валидация
-const regex = /^[\d]+$/;
+const regex = /^\d+(\/\d+)*$/;
 watch(input, () => {
-    if (!regex.test(input.value as string)) error.value = "Введите число"
+    if (input.value && !regex.test(input.value as string)) error.value = "Введите число"
     else error.value = "";
 })
 </script>
